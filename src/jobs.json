@@ -85,9 +85,8 @@
       }
     },
     {
-      "id": "954c",
       "type": "Full-Time",
-      "title": "Test job name",
+      "title": "Test job name change",
       "description": "Test job description",
       "salary": "$70K - $80K",
       "location": "Montreal, QC",
@@ -96,7 +95,8 @@
         "description": "Test description",
         "contactEmail": "test@testmail.com",
         "contactPhone": "5555555555"
-      }
+      },
+      "id": "954c"
     }
   ]
 }
