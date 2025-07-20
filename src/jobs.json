@@ -97,34 +97,6 @@
         "contactEmail": "test@testmail.com",
         "contactPhone": "5555555555"
       }
-    },
-    {
-      "id": "757d",
-      "type": "Full-Time",
-      "title": "Test job name",
-      "description": "Test job description",
-      "salary": "$90K - $100K",
-      "location": "Montréal, QC",
-      "company": {
-        "name": "Test company name",
-        "description": "Test company description",
-        "contactEmail": "test@testmail.com",
-        "contactPhone": "5555555555"
-      }
-    },
-    {
-      "id": "d619",
-      "type": "Full-Time",
-      "title": "Test job name",
-      "description": "Test description",
-      "salary": "$60K - $70K",
-      "location": "Montreal, QC",
-      "company": {
-        "name": "Test company name",
-        "description": "Test company description",
-        "contactEmail": "test@testmail.com",
-        "contactPhone": "4444444444"
-      }
     }
   ]
 }
