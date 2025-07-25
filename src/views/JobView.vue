@@ -5,6 +5,7 @@ import { useRoute, RouterLink, useRouter } from "vue-router";
 import axios from "axios";
 import BackButton from "@/components/BackButton.vue";
 import { useToast } from "vue-toastification";
+import { fetchJobById, deleteJobById } from "@/services/jobServices";
 
 const route = useRoute();
 const router = useRouter();
@@ -19,8 +20,8 @@ const state = reactive({
 
 onMounted(async () => {
   try {
-    const response = await axios.get(`/api/jobs/${jobId}`);
-    state.job = response.data;
+    const response = await fetchJobById(jobId);
+    state.job = response?.data;
   } catch (error) {
     console.error("Error fetching the job", error);
   } finally {
@@ -34,7 +35,7 @@ const deleteJob = async () => {
   try {
     const confirm = window.confirm("Are you sure you want to delete this job?");
     if (confirm) {
-      await axios.delete(`/api/jobs/${jobId}`);
+      await deleteJobById(jobId);
       toast.success("Job deleted successfully");
       router.push("/jobs");
     }
@@ -64,7 +65,9 @@ const deleteJob = async () => {
             >
               <div class="text-orange-700 mb-3">
                 <i class="pi pi-map-marker text-orange"></i>
-                {{ state.job.location }}
+                {{
+                  `${state.job.location.city}, ${state.job.location.province}`
+                }}
               </div>
             </div>
           </div>
@@ -115,7 +118,7 @@ const deleteJob = async () => {
           <div class="bg-white p-6 rounded-lg shadow-md mt-6">
             <h3 class="text-xl font-bold mb-6">Manage Job</h3>
             <RouterLink
-              :to="`/jobs/edit/${state.job.id}`"
+              :to="`/jobs/edit/${state.job._id}`"
               class="bg-green-500 hover:bg-green-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
               >Edit Job</RouterLink
             >

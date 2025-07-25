@@ -1,10 +1,14 @@
 <script setup>
-import { reactive } from "vue";
+import { onBeforeMount, reactive, ref } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
+import { fetchLocations } from "@/services/locationServices";
+import { addJob } from "@/services/jobServices";
 
 const router = useRouter();
+
+const locations = ref([]);
 
 const form = reactive({
   type: "Full-Time",
@@ -38,14 +42,24 @@ const handleSubmit = async () => {
   };
 
   try {
-    const response = await axios.post(`/api/jobs`, newJob);
+    const response = await addJob(newJob);
     toast.success("Job added succesfully");
-    router.push(`/jobs/${response.data.id}`);
+    router.push(`/jobs/${response.data._id}`);
   } catch (error) {
     console.error("Error posting job", error);
     toast.error("Job was not added");
   }
 };
+
+onBeforeMount(async () => {
+  try {
+    const response = await fetchLocations();
+    locations.value = response.data;
+  } catch (error) {
+    console.error("Error fetching locations", error);
+    toast.error("Failed to fetch locations");
+  }
+});
 </script>
 
 <template>
@@ -68,10 +82,10 @@ const handleSubmit = async () => {
               class="border rounded w-full py-2 px-3"
               required
             >
-              <option value="Full-Time">Full-Time</option>
-              <option value="Part-Time">Part-Time</option>
-              <option value="Remote">Remote</option>
-              <option value="Internship">Internship</option>
+              <option value="full-time">Full-Time</option>
+              <option value="part-time">Part-Time</option>
+              <option value="remote">Remote</option>
+              <option value="internship">Internship</option>
             </select>
           </div>
 
@@ -129,16 +143,20 @@ const handleSubmit = async () => {
           </div>
 
           <div class="mb-4">
-            <label class="block text-gray-700 font-bold mb-2"> Location </label>
-            <input
+            <label for="location" class="block text-gray-700 font-bold mb-2"
+              >Location</label
+            >
+            <select
               v-model="form.location"
-              type="text"
               id="location"
               name="location"
-              class="border rounded w-full py-2 px-3 mb-2"
-              placeholder="Company Location"
+              class="border rounded w-full py-2 px-3"
               required
-            />
+            >
+              <option v-for="location in locations" :value="location._id">
+                {{ `${location.city}, ${location.province}` }}
+              </option>
+            </select>
           </div>
 
           <h3 class="text-2xl mb-5">Company Info</h3>

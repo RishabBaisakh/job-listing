@@ -2,8 +2,8 @@
 import JobListing from "./JobListing.vue";
 import { reactive, ref, defineProps, onMounted } from "vue";
 import { RouterLink } from "vue-router";
-import axios from "axios";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
+import { fetchJobs } from "@/services/jobServices";
 
 const state = reactive({
   jobs: [],
@@ -20,10 +20,10 @@ defineProps({
 
 onMounted(async () => {
   try {
-    const response = await axios.get("/api/jobs");
+    const response = await fetchJobs();
     state.jobs = response.data;
   } catch (error) {
-    console.error("Error fetching jobs");
+    console.error("Error fetching jobs", error);
   } finally {
     setTimeout(() => {
       state.isLoading = false;

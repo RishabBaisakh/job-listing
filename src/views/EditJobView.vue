@@ -1,8 +1,11 @@
 <script setup>
-import { reactive, onMounted } from "vue";
+import { reactive, onMounted, ref } from "vue";
 import axios from "axios";
 import { useRouter, useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
+import { fetchJobById, updateJobById } from "@/services/jobServices";
+import { fetchLocations } from "@/services/locationServices";
+import { updateCompanyById } from "@/services/companyService";
 
 const route = useRoute();
 const router = useRouter();
@@ -28,50 +31,98 @@ const state = reactive({
   isLoading: true,
 });
 
+const locations = ref([]);
+
 const toast = useToast();
 
-const handleSubmit = async () => {
+const hasCompanyChanged = () => {
+  const original = state.job.company;
+  const updated = form.company;
+
+  return (
+    original.name !== updated.name ||
+    original.description !== updated.description ||
+    original.contactEmail !== updated.contactEmail ||
+    original.contactPhone !== updated.contactPhone
+  );
+};
+
+const submitCompanyIfChanged = async () => {
+  const companyId = state.job.company._id;
+
+  if (!hasCompanyChanged()) return;
+
+  const updatedCompany = {
+    ...state.job.company,
+    name: form.company.name,
+    description: form.company.description,
+    contactEmail: form.company.contactEmail,
+    contactPhone: form.company.contactPhone,
+  };
+
+  try {
+    await updateCompanyById(updatedCompany);
+    toast.success("Company updated successfully");
+  } catch (error) {
+    throw error;
+  }
+};
+
+const submitUpdatedJob = async () => {
   const updatedJob = {
+    ...state.job,
     type: form.type,
     title: form.title,
     description: form.description,
     salary: form.salary,
     location: form.location,
-    company: {
-      name: form.company.name,
-      description: form.company.description,
-      contactEmail: form.company.contactEmail,
-      contactPhone: form.company.contactPhone,
-    },
+    company: state.job.company._id,
   };
 
   try {
-    const response = await axios.put(`/api/jobs/${jobId}`, updatedJob);
-    toast.success("Job updated succesfully");
-    router.push(`/jobs/${response.data.id}`);
+    const response = await updateJobById(updatedJob);
+    toast.success("Job updated successfully");
+    router.push(`/jobs/${response.data._id}`);
   } catch (error) {
-    console.error("Error updating job", error);
     toast.error("Job was not updated");
+    throw error;
+  }
+};
+
+const handleSubmit = async () => {
+  try {
+    await submitCompanyIfChanged();
+    await submitUpdatedJob();
+  } catch (error) {
+    console.error("Error submitting form:", error);
   }
 };
 
 onMounted(async () => {
   try {
-    const response = await axios.get(`/api/jobs/${jobId}`);
+    const response = await fetchLocations();
+    locations.value = response.data;
+  } catch (error) {
+    console.error("Error fetching locations", error);
+    toast.error("Failed to fetch locations");
+  }
+
+  try {
+    const response = await fetchJobById(jobId);
     state.job = response.data;
     // populate the inputs
     form.type = state.job.type;
     form.title = state.job.title;
     form.description = state.job.description;
     form.salary = state.job.salary;
-    form.location = state.job.location;
+    form.location = state.job.location._id;
     form.company.name = state.job.company.name;
     form.company.description = state.job.company.description;
     form.company.contactEmail = state.job.company.contactEmail;
     form.company.contactPhone = state.job.company.contactPhone;
-
+  } catch (error) {
     console.error("Error fetching the job", error);
-  } catch (error) {}
+  }
 });
 </script>
 
@@ -95,10 +146,10 @@ onMounted(async () => {
               class="border rounded w-full py-2 px-3"
               required
             >
-              <option value="Full-Time">Full-Time</option>
-              <option value="Part-Time">Part-Time</option>
-              <option value="Remote">Remote</option>
-              <option value="Internship">Internship</option>
+              <option value="full-time">Full-Time</option>
+              <option value="part-time">Part-Time</option>
+              <option value="remote">Remote</option>
+              <option value="internship">Internship</option>
             </select>
           </div>
 
@@ -156,16 +207,20 @@ onMounted(async () => {
           </div>
 
           <div class="mb-4">
-            <label class="block text-gray-700 font-bold mb-2"> Location </label>
-            <input
+            <label for="location" class="block text-gray-700 font-bold mb-2"
+              >Location</label
+            >
+            <select
               v-model="form.location"
-              type="text"
               id="location"
               name="location"
-              class="border rounded w-full py-2 px-3 mb-2"
-              placeholder="Company Location"
+              class="border rounded w-full py-2 px-3"
               required
-            />
+            >
+              <option v-for="location in locations" :value="location._id">
+                {{ `${location.city}, ${location.province}` }}
+              </option>
+            </select>
           </div>
 
           <h3 class="text-2xl mb-5">Company Info</h3>
