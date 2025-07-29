@@ -1,14 +1,13 @@
 <script setup>
-import { reactive, onMounted, ref } from "vue";
-import axios from "axios";
+import { reactive, onMounted, computed, watchEffect } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
-import { fetchJobById, updateJobById } from "@/services/jobServices";
-import { fetchLocations } from "@/services/locationServices";
-import { updateCompanyById } from "@/services/companyService";
+import { useStore } from "vuex";
 
+const store = useStore();
 const route = useRoute();
 const router = useRouter();
+const toast = useToast();
 
 const jobId = route.params.id;
 
@@ -31,9 +30,16 @@ const state = reactive({
   isLoading: true,
 });
 
-const locations = ref([]);
-
-const toast = useToast();
+const locations = computed(() => store.getters["locations/allLocations"]);
+watchEffect(async () => {
+  if (locations.value.length === 0) {
+    try {
+      await store.dispatch("locations/fetchLocations");
+    } catch (error) {
+      toast.error("Failed to fetch locations");
+    }
+  }
+});
 
 const hasCompanyChanged = () => {
   const original = state.job.company;
@@ -48,8 +54,6 @@ const hasCompanyChanged = () => {
 };
 
 const submitCompanyIfChanged = async () => {
-  const companyId = state.job.company._id;
-
   if (!hasCompanyChanged()) return;
 
   const updatedCompany = {
@@ -61,7 +65,7 @@ const submitCompanyIfChanged = async () => {
   };
 
   try {
-    await updateCompanyById(updatedCompany);
+    await store.dispatch("companies/updateCompanyById", updatedCompany);
     toast.success("Company updated successfully");
   } catch (error) {
     throw error;
@@ -80,9 +84,9 @@ const submitUpdatedJob = async () => {
   };
 
   try {
-    const response = await updateJobById(updatedJob);
+    await store.dispatch("jobs/updateJobById", updatedJob);
     toast.success("Job updated successfully");
-    router.push(`/jobs/${response.data._id}`);
+    router.push(`/jobs/${jobId}`);
   } catch (error) {
     toast.error("Job was not updated");
     throw error;
@@ -100,17 +104,14 @@ const handleSubmit = async () => {
 
 onMounted(async () => {
   try {
-    const response = await fetchLocations();
-    locations.value = response.data;
-  } catch (error) {
-    console.error("Error fetching locations", error);
-    toast.error("Failed to fetch locations");
-  }
+    const job = store.getters["jobs/getJobById"](jobId);
+    if (!job) {
+      await store.dispatch("jobs/fetchJobById", jobId);
+      state.job = store.getters["jobs/getJobById"](jobId);
+    } else {
+      state.job = job;
+    }
 
-  try {
-    const response = await fetchJobById(jobId);
-    state.job = response.data;
-    // populate the inputs
     form.type = state.job.type;
     form.title = state.job.title;
     form.description = state.job.description;
@@ -121,7 +122,7 @@ onMounted(async () => {
     form.company.contactEmail = state.job.company.contactEmail;
     form.company.contactPhone = state.job.company.contactPhone;
   } catch (error) {
-    console.error("Error fetching the job", error);
+    toast.error("Error fetching the job");
   }
 });
 </script>
@@ -167,6 +168,7 @@ onMounted(async () => {
               required
             />
           </div>
+
           <div class="mb-4">
             <label for="description" class="block text-gray-700 font-bold mb-2"
               >Description</label
@@ -217,7 +219,15 @@ onMounted(async () => {
               class="border rounded w-full py-2 px-3"
               required
             >
-              <option v-for="location in locations" :value="location._id">
+              <option v-if="!locations || locations.length === 0" disabled>
+                Loading locations...
+              </option>
+              <option
+                v-else
+                v-for="location in locations"
+                :key="location._id"
+                :value="location._id"
+              >
                 {{ `${location.city}, ${location.province}` }}
               </option>
             </select>
@@ -271,6 +281,7 @@ onMounted(async () => {
               required
             />
           </div>
+
           <div class="mb-4">
             <label
               for="contact_phone"

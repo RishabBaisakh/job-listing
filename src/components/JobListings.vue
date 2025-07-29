@@ -3,13 +3,12 @@ import JobListing from "./JobListing.vue";
 import { computed, defineProps, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
-import { fetchJobs } from "@/services/jobServices";
 import { useStore } from "vuex";
 
 const store = useStore();
-console.log("🚀 ~ store:", store);
 
 const jobs = computed(() => store.state.jobs.jobs);
+console.log("🚀 ~ jobs:", jobs);
 const isLoading = computed(() => store.state.jobs.isLoading);
 
 onMounted(() => {
@@ -23,19 +22,6 @@ defineProps({
     default: false,
   },
 });
-
-// onMounted(async () => {
-//   try {
-//     const response = await fetchJobs();
-//     state.jobs = response.data;
-//   } catch (error) {
-//     console.error("Error fetching jobs", error);
-//   } finally {
-//     setTimeout(() => {
-//       state.isLoading = false;
-//     }, 1500);
-//   }
-// });
 </script>
 
 <template>

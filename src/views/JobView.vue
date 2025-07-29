@@ -1,33 +1,25 @@
 <script setup>
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
-import { reactive, onMounted } from "vue";
+import { reactive, onMounted, computed, watchEffect } from "vue";
 import { useRoute, RouterLink, useRouter } from "vue-router";
-import axios from "axios";
 import BackButton from "@/components/BackButton.vue";
 import { useToast } from "vue-toastification";
 import { fetchJobById, deleteJobById } from "@/services/jobServices";
+import { useStore } from "vuex";
 
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
 
 const jobId = route.params.id;
+const store = useStore();
 
-const state = reactive({
-  job: {},
-  isLoading: true,
-});
+const job = computed(() => store.getters["jobs/getJobById"](jobId));
+const isLoading = computed(() => store.state.jobs.isLoading);
 
-onMounted(async () => {
-  try {
-    const response = await fetchJobById(jobId);
-    state.job = response?.data;
-  } catch (error) {
-    console.error("Error fetching the job", error);
-  } finally {
-    setTimeout(() => {
-      state.isLoading = false;
-    }, 1500);
+watchEffect(async () => {
+  if (!job.value) {
+    await store.dispatch("jobs/fetchJobById", jobId);
   }
 });
 
@@ -35,7 +27,7 @@ const deleteJob = async () => {
   try {
     const confirm = window.confirm("Are you sure you want to delete this job?");
     if (confirm) {
-      await deleteJobById(jobId);
+      await store.dispatch("jobs/deleteJobById", jobId);
       toast.success("Job deleted successfully");
       router.push("/jobs");
     }
@@ -48,7 +40,7 @@ const deleteJob = async () => {
 
 <template>
   <BackButton />
-  <div v-if="state.isLoading" class="text-center text-gray-500 py-6">
+  <div v-if="isLoading" class="text-center text-gray-500 py-6">
     <PulseLoader />
   </div>
   <section v-else class="bg-green-50">
@@ -58,16 +50,14 @@ const deleteJob = async () => {
           <div
             class="bg-white p-6 rounded-lg shadow-md text-center md:text-left"
           >
-            <div class="text-gray-500 mb-4">{{ state.job.type }}</div>
-            <h1 class="text-3xl font-bold mb-4">{{ state.job.title }}</h1>
+            <div class="text-gray-500 mb-4">{{ job.type }}</div>
+            <h1 class="text-3xl font-bold mb-4">{{ job.title }}</h1>
             <div
               class="text-gray-500 mb-4 flex align-middle justify-center md:justify-start"
             >
               <div class="text-orange-700 mb-3">
                 <i class="pi pi-map-marker text-orange"></i>
-                {{
-                  `${state.job.location.city}, ${state.job.location.province}`
-                }}
+                {{ `${job.location.city}, ${job.location.province}` }}
               </div>
             </div>
           </div>
@@ -78,12 +68,12 @@ const deleteJob = async () => {
             </h3>
 
             <p class="mb-4">
-              {{ state.job.description }}
+              {{ job.description }}
             </p>
 
             <h3 class="text-green-800 text-lg font-bold mb-2">Salary</h3>
 
-            <p class="mb-4">{{ state.job.salary }} / Year</p>
+            <p class="mb-4">{{ job.salary }} / Year</p>
           </div>
         </main>
 
@@ -93,10 +83,10 @@ const deleteJob = async () => {
           <div class="bg-white p-6 rounded-lg shadow-md">
             <h3 class="text-xl font-bold mb-6">Company Info</h3>
 
-            <h2 class="text-2xl">{{ state.job.company.name }}</h2>
+            <h2 class="text-2xl">{{ job.company.name }}</h2>
 
             <p class="my-2">
-              {{ state.job.company.description }}
+              {{ job.company.description }}
             </p>
 
             <hr class="my-4" />
@@ -104,13 +94,13 @@ const deleteJob = async () => {
             <h3 class="text-xl">Contact Email:</h3>
 
             <p class="my-2 bg-green-100 p-2 font-bold">
-              {{ state.job.company.contactEmail }}
+              {{ job.company.contactEmail }}
             </p>
 
             <h3 class="text-xl">Contact Phone:</h3>
 
             <p class="my-2 bg-green-100 p-2 font-bold">
-              {{ state.job.company.contactPhone }}
+              {{ job.company.contactPhone }}
             </p>
           </div>
 
@@ -118,7 +108,7 @@ const deleteJob = async () => {
           <div class="bg-white p-6 rounded-lg shadow-md mt-6">
             <h3 class="text-xl font-bold mb-6">Manage Job</h3>
             <RouterLink
-              :to="`/jobs/edit/${state.job._id}`"
+              :to="`/jobs/edit/${job._id}`"
               class="bg-green-500 hover:bg-green-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
               >Edit Job</RouterLink
             >
