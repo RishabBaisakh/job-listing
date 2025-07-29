@@ -1,6 +1,6 @@
 <script setup>
 import JobListing from "./JobListing.vue";
-import { computed, defineProps, onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import { useStore } from "vuex";
@@ -8,7 +8,6 @@ import { useStore } from "vuex";
 const store = useStore();
 
 const jobs = computed(() => store.state.jobs.jobs);
-console.log("🚀 ~ jobs:", jobs);
 const isLoading = computed(() => store.state.jobs.isLoading);
 
 onMounted(() => {

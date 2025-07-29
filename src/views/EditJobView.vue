@@ -1,4 +1,5 @@
 <script setup>
+import { useLocations } from "@/composables/locations";
 import { reactive, onMounted, computed, watchEffect } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
@@ -8,6 +9,7 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
+const locations = useLocations();
 
 const jobId = route.params.id;
 
@@ -27,18 +29,6 @@ const form = reactive({
 
 const state = reactive({
   job: {},
-  isLoading: true,
-});
-
-const locations = computed(() => store.getters["locations/allLocations"]);
-watchEffect(async () => {
-  if (locations.value.length === 0) {
-    try {
-      await store.dispatch("locations/fetchLocations");
-    } catch (error) {
-      toast.error("Failed to fetch locations");
-    }
-  }
 });
 
 const hasCompanyChanged = () => {

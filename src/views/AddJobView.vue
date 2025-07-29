@@ -1,14 +1,15 @@
 <script setup>
-import { onBeforeMount, reactive, ref } from "vue";
-import axios from "axios";
+import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
-import { fetchLocations } from "@/services/locationServices";
 import { addJob } from "@/services/jobServices";
+import { useLocations } from "@/composables/locations";
+import { useStore } from "vuex";
 
 const router = useRouter();
-
-const locations = ref([]);
+const store = useStore();
+const toast = useToast();
+const locations = useLocations();
 
 const form = reactive({
   type: "Full-Time",
@@ -23,8 +24,6 @@ const form = reactive({
     contactPhone: "",
   },
 });
-
-const toast = useToast();
 
 const handleSubmit = async () => {
   const newJob = {
@@ -42,24 +41,14 @@ const handleSubmit = async () => {
   };
 
   try {
-    const response = await addJob(newJob);
+    const createdJob = await store.dispatch("jobs/addJob", newJob);
     toast.success("Job added succesfully");
-    router.push(`/jobs/${response.data._id}`);
+    router.push(`/jobs/${createdJob._id}`);
   } catch (error) {
     console.error("Error posting job", error);
     toast.error("Job was not added");
   }
 };
-
-onBeforeMount(async () => {
-  try {
-    const response = await fetchLocations();
-    locations.value = response.data;
-  } catch (error) {
-    console.error("Error fetching locations", error);
-    toast.error("Failed to fetch locations");
-  }
-});
 </script>
 
 <template>

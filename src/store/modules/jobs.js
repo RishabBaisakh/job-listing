@@ -82,6 +82,7 @@ export default {
       try {
         const res = await apiAddJob(newJob);
         commit("addJobToList", res.data);
+        return res.data;
       } catch (error) {
         console.error(error);
       }
