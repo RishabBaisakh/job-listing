@@ -1,6 +1,6 @@
 <script setup>
 import { useLocations } from "@/composables/locations";
-import { reactive, onMounted, computed, watchEffect } from "vue";
+import { reactive, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 import { useStore } from "vuex";

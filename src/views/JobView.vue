@@ -1,10 +1,9 @@
 <script setup>
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
-import { reactive, onMounted, computed, watchEffect } from "vue";
+import { computed, watchEffect } from "vue";
 import { useRoute, RouterLink, useRouter } from "vue-router";
 import BackButton from "@/components/BackButton.vue";
 import { useToast } from "vue-toastification";
-import { fetchJobById, deleteJobById } from "@/services/jobServices";
 import { useStore } from "vuex";
 
 const route = useRoute();

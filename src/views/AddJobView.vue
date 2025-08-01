@@ -2,7 +2,6 @@
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
-import { addJob } from "@/services/jobServices";
 import { useLocations } from "@/composables/locations";
 import { useStore } from "vuex";
 
