@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import jobRoutes from "./jobRoutes";
+import employerRoutes from "./employerRoutes";
 import authRoutes from "./authRoutes";
 
 const router = createRouter({
@@ -8,12 +8,12 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: () => import("@/views/HomeView.vue"),
+      component: () => import("@/views/employer/HomeView.vue"),
     },
     {
       path: "/jobs",
-      component: () => import("@/layouts/JobsLayout.vue"),
-      children: [...jobRoutes],
+      component: () => import("@/layouts/EmployerLayout.vue"),
+      children: [...employerRoutes],
     },
     {
       path: "/auth",

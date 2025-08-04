@@ -45,6 +45,7 @@ const handleRegister = () => {
   console.log("Registering user:", form);
 
   success.value = "Registration successful! You can now log in.";
+
   // Reset form
   form.firstName = "";
   form.lastName = "";
@@ -113,7 +114,8 @@ const handleRegister = () => {
         <div v-if="error" class="mb-4 text-red-600 text-sm">
           {{ error }}
         </div>
-        <div v-if="success" class="mb-4 text-green-600 text-sm">
+
+        <div v-if="success" class="mb-4 text-green-600 text-sm text-center">
           {{ success }}
         </div>
 
@@ -124,6 +126,9 @@ const handleRegister = () => {
           Register
         </button>
       </form>
+      <div class="flex justify-center mt-3 text-green-500 hover:text-green-700">
+        <router-link to="/auth/login">Login Screen</router-link>
+      </div>
     </div>
   </section>
 </template>

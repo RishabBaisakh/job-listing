@@ -68,6 +68,9 @@ const handleLogin = () => {
           Login
         </button>
       </form>
+      <div class="flex justify-center mt-3 text-green-500 hover:text-green-700">
+        <router-link to="/auth/register">Register Screen</router-link>
+      </div>
     </div>
   </section>
 </template>
