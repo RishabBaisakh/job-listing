@@ -42,7 +42,7 @@ const deleteJob = async () => {
   <div v-if="isLoading" class="text-center text-gray-500 py-6">
     <PulseLoader />
   </div>
-  <section v-else class="bg-green-50">
+  <section v-else>
     <div class="container m-auto py-10 px-6">
       <div class="grid grid-cols-1 md:grid-cols-70/30 w-full gap-6">
         <main>

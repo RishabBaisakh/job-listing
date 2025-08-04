@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import employerRoutes from "./employerRoutes";
 import authRoutes from "./authRoutes";
+import communityRoutes from "./communityRoutes";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,14 +12,25 @@ const router = createRouter({
       component: () => import("@/views/employer/HomeView.vue"),
     },
     {
-      path: "/jobs",
-      component: () => import("@/layouts/EmployerLayout.vue"),
-      children: [...employerRoutes],
-    },
-    {
       path: "/auth",
       component: () => import("@/layouts/AuthLayout.vue"),
       children: [...authRoutes],
+    },
+    {
+      path: "/",
+      component: () => import("@/layouts/MainLayout/index.vue"),
+      children: [
+        {
+          path: "/jobs",
+          component: () => import("@/layouts/MainLayout/EmployerLayout.vue"),
+          children: [...employerRoutes],
+        },
+        {
+          path: "/communities",
+          component: () => import("@/layouts/MainLayout/CommunityLayout.vue"),
+          children: [...communityRoutes],
+        },
+      ],
     },
     {
       path: "/:catchAll(.*)",
