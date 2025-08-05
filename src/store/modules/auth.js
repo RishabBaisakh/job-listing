@@ -1,6 +1,7 @@
 import {
   fetchCurrentUser,
   loginEmployer,
+  logoutEmployer,
   registerEmployer,
 } from "@/services/authServices";
 
@@ -48,11 +49,21 @@ export default {
     async initializeSession({ commit }) {
       commit("setLoading", true);
       try {
-        const res = await fetchCurrentUser();
-        commit("setUser", res.data.user);
+        const user = await fetchCurrentUser();
+        commit("setUser", user);
       } catch (error) {
         console.error("Error while initializing session", error);
         commit("clearUser");
+      } finally {
+        commit("setLoading", false);
+      }
+    },
+    async logout({ commit }) {
+      commit("setLoading", true);
+      try {
+        await logoutEmployer();
+        commit("clearUser");
+      } catch (error) {
       } finally {
         commit("setLoading", false);
       }

@@ -21,9 +21,20 @@ export const loginEmployer = async (employer) => {
 
 export const fetchCurrentUser = async () => {
   try {
-    return await api.get("/auth/me");
+    const response = await api.get("/auth/me");
+    return response.data.user;
   } catch (error) {
     console.error("Failed to fetch the current user", error);
+    throw error;
+  }
+};
+
+export const logoutEmployer = async () => {
+  try {
+    const response = await api.post("/auth/logout");
+    return response.data;
+  } catch (error) {
+    console.error("Failed to logout employer", error);
     throw error;
   }
 };

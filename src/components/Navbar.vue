@@ -2,6 +2,9 @@
 import logo from "@/assets/img/logo.png";
 import { NAV_OPTIONS } from "@/constants/navOptions";
 import { RouterLink, useRoute } from "vue-router";
+import { useStore } from "vuex";
+
+const store = useStore();
 
 const isActiveLink = (routePath) => {
   const route = useRoute();
@@ -9,6 +12,10 @@ const isActiveLink = (routePath) => {
 };
 
 const navOptions = NAV_OPTIONS.employer;
+
+const handleLogout = async () => {
+  await store.dispatch("auth/logout");
+};
 </script>
 
 <template>
@@ -39,6 +46,12 @@ const navOptions = NAV_OPTIONS.employer;
                 ]"
                 >{{ option.name }}</RouterLink
               >
+              <button
+                @click="handleLogout"
+                class="hover:bg-gray-900 text-white px-3 py-2 rounded-md"
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>
