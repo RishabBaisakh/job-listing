@@ -1,5 +1,8 @@
 <script setup>
 import { reactive, ref } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore();
 
 const form = reactive({
   firstName: "",
@@ -16,7 +19,7 @@ const handleRegister = () => {
   error.value = "";
   success.value = "";
 
-  // Basic validation
+  // TODO: replace with VeeValidate
   if (
     !form.firstName.trim() ||
     !form.lastName.trim() ||
@@ -28,23 +31,26 @@ const handleRegister = () => {
     return;
   }
 
-  // Simple email pattern check
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailPattern.test(form.email)) {
     error.value = "Please enter a valid email address.";
     return;
   }
 
-  // Password length check
   if (form.password.length < 6) {
     error.value = "Password must be at least 6 characters long.";
     return;
   }
 
-  // Simulate registration logic
-  console.log("Registering user:", form);
+  const response = store.dispatch("auth/register", {
+    firstName: form.firstName,
+    lastName: form.lastName,
+    email: form.email,
+    password: form.password,
+    accessCode: form.accessCode,
+  });
 
-  success.value = "Registration successful! You can now log in.";
+  if (response) success.value = "Registration successful! You can now log in.";
 
   // Reset form
   form.firstName = "";

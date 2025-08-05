@@ -1,5 +1,10 @@
 <script setup>
 import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+
+const store = useStore();
+const router = useRouter();
 
 const form = reactive({
   email: "",
@@ -9,13 +14,22 @@ const form = reactive({
 
 const error = ref("");
 
-const handleLogin = () => {
+const handleLogin = async () => {
   if (!form.email || !form.password || !form.accessCode) {
     error.value = "All fields are required.";
     return;
   }
 
-  console.log("Logging in with", form);
+  try {
+    await store.dispatch("auth/login", {
+      email: form.email,
+      password: form.password,
+      accessCode: form.accessCode,
+    });
+    router.push("/jobs");
+  } catch (error) {
+    console.error("Error while loggin in", error);
+  }
 
   error.value = "";
 };
