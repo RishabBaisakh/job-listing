@@ -23,8 +23,12 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col min-h-screen">
-    <Navbar />
-    <main class="bg-green-50 flex-grow">
+    <div class="sticky top-0 z-50">
+      <Navbar />
+    </div>
+    <main
+      class="bg-green-50 flex-grow px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20"
+    >
       <RouterView />
     </main>
   </div>
