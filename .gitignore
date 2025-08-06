@@ -30,4 +30,8 @@ coverage
 *.tsbuildinfo
 
 .env
-*.lock
+# If using yarn
+package-lock.json
+
+# If using npm
+yarn.lock

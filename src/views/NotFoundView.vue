@@ -2,15 +2,15 @@
   <section
     class="bg-green-50 min-h-screen text-center flex flex-col justify-center items-center h-96"
   >
-    <v-card class="pa-8 shadow-xl" elevation="6" rounded>
-      <i class="pi pi-exclamation-triangle text-yellow-500 text-7xl mb-5"></i>
-      <h1 class="text-4xl md:text-6xl font-bold mb-4">404 Not Found</h1>
-      <p class="text-base md:text-xl mb-5">This page does not exist</p>
-      <RouterLink
-        to="/"
-        class="text-white bg-green-700 hover:bg-green-900 rounded-md px-3 py-2 mt-4"
-        >Go Back</RouterLink
-      >
-    </v-card>
+    <!-- <v-card class="pa-8 shadow-xl" elevation="6" rounded> -->
+    <i class="pi pi-exclamation-triangle text-yellow-500 text-7xl mb-5"></i>
+    <h1 class="text-4xl md:text-6xl font-bold mb-4">404 Not Found</h1>
+    <p class="text-base md:text-xl mb-5">This page does not exist</p>
+    <RouterLink
+      to="/"
+      class="text-white bg-green-700 hover:bg-green-900 rounded-md px-3 py-2 mt-4"
+      >Go Back</RouterLink
+    >
+    <!-- </v-card> -->
   </section>
 </template>
