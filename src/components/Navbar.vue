@@ -38,7 +38,9 @@ const handleLogout = async () => {
                 v-for="option in navOptions"
                 :to="option.path"
                 :class="[
-                  isActiveLink('/') ? 'bg-green-900' : 'hover:bg-gray-900',
+                  isActiveLink(option.path)
+                    ? 'bg-green-900'
+                    : 'hover:bg-gray-900',
                   'text-white',
                   'px-3',
                   'py-2',

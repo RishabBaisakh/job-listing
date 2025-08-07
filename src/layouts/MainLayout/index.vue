@@ -27,13 +27,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen">
+  <div class="flex flex-col h-screen">
     <div class="sticky top-0 z-50">
       <Navbar />
       <JobToolbar v-if="showToolbar" />
     </div>
     <main
-      class="bg-green-50 flex-grow px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20"
+      class="bg-green-50 flex-grow min-h-0 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20"
     >
       <RouterView />
     </main>

@@ -41,8 +41,10 @@ const handleSubmit = async () => {
 
   try {
     const createdJob = await store.dispatch("jobs/addJob", newJob);
-    toast.success("Job added succesfully");
-    router.push(`/jobs/${createdJob._id}`);
+    if (createdJob) {
+      toast.success("Job added succesfully");
+      router.push(`/jobs/${createdJob._id}`);
+    }
   } catch (error) {
     console.error("Error posting job", error);
     toast.error("Job was not added");
@@ -72,7 +74,7 @@ const handleSubmit = async () => {
             >
               <option value="full-time">Full-Time</option>
               <option value="part-time">Part-Time</option>
-              <option value="remote">Remote</option>
+              <option value="contract">Contract</option>
               <option value="internship">Internship</option>
             </select>
           </div>

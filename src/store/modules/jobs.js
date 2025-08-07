@@ -11,6 +11,7 @@ export default {
   state: () => ({
     jobs: [],
     selectedJob: null,
+    listSelection: null,
     isLoading: false,
   }),
   mutations: {
@@ -31,6 +32,15 @@ export default {
     },
     addJobToList(state, newJob) {
       state.jobs.push(newJob);
+    },
+    setListSelection(state, jobId = null) {
+      if (!jobId) {
+        state.listSelection = state.jobs[0];
+      } else {
+        state.jobs.forEach((job) => {
+          if (job._id.toString() === jobId) state.listSelection = job;
+        });
+      }
     },
   },
   actions: {
@@ -87,6 +97,9 @@ export default {
         console.error(error);
       }
     },
+    setListSelection({ commit }, jobId = null) {
+      commit("setListSelection", jobId);
+    },
   },
   getters: {
     getJobById: (state) => (id) => {
@@ -98,6 +111,9 @@ export default {
       }
 
       return null;
+    },
+    getListSelection: (state) => {
+      return state.listSelection;
     },
   },
 };
