@@ -7,6 +7,7 @@ import { useStore } from "vuex";
 const store = useStore();
 
 const jobs = computed(() => store.state.jobs.jobs);
+const listSelection = computed(() => store.state.jobs.listSelection);
 const isLoading = computed(() => store.state.jobs.isLoading);
 </script>
 
@@ -16,7 +17,13 @@ const isLoading = computed(() => store.state.jobs.isLoading);
       <div v-if="isLoading" class="text-center text-gray-500 py-6">
         <PulseLoader />
       </div>
-      <JobListing v-else v-for="job in jobs" :key="job.id" :job="job">
+      <JobListing
+        v-else
+        v-for="job in jobs"
+        :key="job.id"
+        :job="job"
+        :isSelected="listSelection._id === job._id"
+      >
         {{ job.title }}
       </JobListing>
     </div>

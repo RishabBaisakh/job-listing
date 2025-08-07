@@ -1,14 +1,28 @@
 <script setup>
 import company from "@/assets/img/placeholders/company.png";
 import Card from "primevue/card";
+import { useStore } from "vuex";
 
-const props = defineProps({
+const store = useStore();
+
+const { job } = defineProps({
   job: Object,
+  isSelected: Boolean,
 });
+
+const handleListingSelection = () => {
+  store.dispatch("jobs/setListSelection", job._id);
+};
 </script>
 
 <template>
-  <Card class="group hover:cursor-pointer !rounded-none border">
+  <Card
+    :class="[
+      'group hover:cursor-pointer !rounded-none border',
+      isSelected ? 'border-l-4 border-green-700 !bg-gray-100 shadow-lg' : '',
+    ]"
+    @click="handleListingSelection"
+  >
     <template #title>
       <div class="mb-3">
         <div class="flex mb-2">

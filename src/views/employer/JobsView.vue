@@ -8,7 +8,6 @@ const store = useStore();
 
 onMounted(async () => {
   await store.dispatch("jobs/fetchJobs");
-  store.dispatch("jobs/setListSelection");
 });
 </script>
 

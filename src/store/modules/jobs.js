@@ -45,10 +45,12 @@ export default {
   },
   actions: {
     async fetchJobs({ commit }) {
+      // This is my job list for now, will change it when we add filters
       commit("setLoading", true);
       try {
         const res = await apiFetchJobs();
         commit("setJobs", res.data);
+        commit("setListSelection");
       } catch (error) {
         console.error(error);
       } finally {
