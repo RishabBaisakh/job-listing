@@ -11,6 +11,7 @@ const router = useRouter();
 const route = useRoute();
 
 const user = computed(() => store.getters["auth/getUser"]);
+const company = computed(() => store.getters["company/getCompany"]);
 const isLoading = computed(() => store.state.auth.isLoading);
 
 const showToolbar = computed(() => route.path.startsWith("/jobs"));
@@ -21,7 +22,14 @@ watch(isLoading, (loading) => {
   }
 });
 
+watch(user, async (newUser) => {
+  if (newUser && !company.value) {
+    await store.dispatch("company/fetchCompanyById", newUser.company);
+  }
+});
+
 onMounted(async () => {
+  // TODO: I think should belong on outer layer, think more!
   await store.dispatch("auth/initializeSession");
 });
 </script>

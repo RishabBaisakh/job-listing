@@ -1,42 +1,43 @@
-import { updateCompanyById } from "@/services/companyServices";
+import { fetchCompanyById as apiFetchCompanyById } from "@/services/companyServices";
 
 export default {
   namespaced: true,
 
   state: () => ({
-    companies: [],
+    company: null,
     isLoading: false,
     error: null,
   }),
 
   mutations: {
-    setCompanies(state, companies) {
-      state.companies = companies;
-    },
     setLoading(state, val) {
       state.isLoading = val;
     },
-    updateCompanyInList(state, updatedCompany) {
-      const index = state.companies.findIndex(
-        (c) => c._id === updatedCompany._id
-      );
-      if (index !== -1) {
-        state.companies.splice(index, 1, updatedCompany);
-      }
+    setCompany(state, company) {
+      state.company = company;
     },
   },
-
   actions: {
-    async updateCompany({ commit }, updatedCompany) {
+    async fetchCompanyById({ commit }, id) {
       commit("setLoading", true);
       try {
-        const res = await updateCompanyById(updatedCompany);
-        commit("updateCompanyInList", res.data);
+        const company = await apiFetchCompanyById(id);
+        if (company._id) {
+          commit("setCompany", company);
+        }
       } catch (error) {
-        console.error("Error updating company:", error);
+        console.error("Error updating company: ", error);
       } finally {
         commit("setLoading", false);
       }
+    },
+  },
+  getters: {
+    getCompany: (state) => {
+      return state.company;
+    },
+    getLoading: (state) => {
+      return state.loading;
     },
   },
 };
