@@ -15,6 +15,7 @@ const company = computed(() => store.getters["company/getCompany"]);
 const isLoading = computed(() => store.state.auth.isLoading);
 
 const showToolbar = computed(() => route.path.startsWith("/jobs"));
+const isJobListing = computed(() => route.path === "/jobs");
 
 watch(isLoading, (loading) => {
   if (!loading && !user.value) {
@@ -35,7 +36,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col h-screen">
+  <div :class="['flex flex-col', isJobListing ? 'h-screen' : 'h-full']">
     <div class="sticky top-0 z-50">
       <Navbar />
       <JobToolbar v-if="showToolbar" />
