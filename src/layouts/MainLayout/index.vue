@@ -36,7 +36,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div :class="['flex flex-col', isJobListing ? 'h-screen' : 'h-full']">
+  <!-- Replace it with a global app wide loader -->
+  <div v-if="isLoading" class="text-center text-gray-500 py-6">
+    <PulseLoader />
+  </div>
+  <div v-else :class="['flex flex-col', isJobListing ? 'h-screen' : 'h-full']">
     <div class="sticky top-0 z-50">
       <Navbar />
       <JobToolbar v-if="showToolbar" />

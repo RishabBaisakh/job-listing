@@ -1,16 +1,23 @@
 <script setup>
 import JobListing from "../JobListing.vue";
 
-defineProps({
+const { jobs, showAllJobDetails } = defineProps({
   jobs: Array,
+  showAllJobDetails: Function,
 });
 </script>
 
 <template>
   <section>
-    <h3 class="text-gray-500 font-semibold">Jobs</h3>
-    <JobListing v-for="job in jobs" :key="job.id" :job="job">
-      {{ job.title }}
-    </JobListing>
+    <div class="flex justify-between mb-5">
+      <h3 class="text-gray-500 font-semibold">Most recent job</h3>
+      <button
+        class="text-green-600 hover:underline bg-transparent border-none p-0 cursor-pointer"
+        @click="async () => await showAllJobDetails()"
+      >
+        View All
+      </button>
+    </div>
+    <JobListing :job="jobs[0]" />
   </section>
 </template>

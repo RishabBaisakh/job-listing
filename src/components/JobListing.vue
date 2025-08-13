@@ -35,6 +35,12 @@ const handleListingSelection = () => {
           {{ job.title }}
           <span class="text-gray-600 font-thin">{{ `(${job.type})` }}</span>
         </h3>
+        <div class="flex text-gray-500 align-center my-1 text-sm">
+          <i class="pi pi-clock my-auto"></i>
+          <p class="mx-2">
+            {{ new Date(job.datePosted).toDateString() }}
+          </p>
+        </div>
       </div>
     </template>
     <template #content>
